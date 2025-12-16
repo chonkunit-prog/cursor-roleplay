@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor Interview Prep - Figma Scenario</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .setup-section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid #333;
+        }
+
+        .setup-section h2 {
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .scenario-box {
+            background: #0d1117;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+        }
+
+        .scenario-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .scenario-box ul {
+            margin-left: 20px;
+            color: #ccc;
+        }
+
+        .scenario-box li {
+            margin: 8px 0;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .start-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .chat-container {
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #333;
+            margin: 30px 0;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+            background: #0d1117;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .chat-header h3 {
+            color: #fff;
+        }
+
+        .participants {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .participant {
+            background: #1a1a1a;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #999;
+            border: 1px solid #333;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .speaker-name {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .speaker-name.user {
+            color: #48bb78;
+        }
+
+        .message-content {
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .message.user .message-content {
+            border-left-color: #48bb78;
+        }
+
+        .input-section {
+            padding: 20px;
+            border-top: 1px solid #333;
+            background: #0d1117;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .send-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .send-button:hover {
+            background: #5568d3;
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .end-button {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .end-button:hover {
+            background: #c53030;
+        }
+
+        .feedback-section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid #333;
+        }
+
+        .feedback-section h2 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .feedback-content {
+            background: #0d1117;
+            padding: 20px;
+            border-radius: 8px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .loading {
+            color: #999;
+            font-style: italic;
+        }
+
+        .warning {
+            background: #2d1f1f;
+            border: 1px solid #e53e3e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #fc8181;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        function App() {
+            const [sessionStarted, setSessionStarted] = useState(false);
+            const [messages, setMessages] = useState([]);
+            const [inputValue, setInputValue] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            const [sessionEnded, setSessionEnded] = useState(false);
+            const [feedback, setFeedback] = useState('');
+            const messagesEndRef = useRef(null);
+            const conversationHistory = useRef([]);
+
+            const scrollToBottom = () => {
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+
+            useEffect(() => {
+                scrollToBottom();
+            }, [messages]);
+
+            const startSession = async () => {
+                setSessionStarted(true);
+                setIsLoading(true);
+
+                const systemPrompt = `You are roleplaying as TWO personas simultaneously in a sales call at Figma:
+
+1. **Sarah Chen - VP of Engineering at Figma**
+2. **Marcus Rodriguez - Head of Security at Figma**
+
+THE SCENARIO:
+- A Cursor AE has requested this call
+- You've noticed some engineers using Cursor without approval
+- Your initial stance: hostile/concerned about security, want to remove Cursor immediately
+- You claim ignorance about what Cursor does and what value GitHub Copilot provides
+- You're skeptical and dismissive initially
+
+THE HIDDEN CONTEXT (only reveal through good discovery):
+- Figma is going through a major engineering reorganization
+- Teams are being restructured, new projects spinning up
+- Engineering velocity has been a concern during this transition
+- Some engineers found Cursor on their own and productivity improved
+- But you haven't connected these dots yet - the rep needs to help you see it
+
+YOUR BEHAVIOR:
+- Start cold and hostile about the security concern
+- Switch between Sarah (eng productivity angle) and Marcus (security angle) naturally
+- Make the rep work to get information out of you
+- Drop subtle hints about the reorg only if they ask good discovery questions about:
+  - Current engineering challenges
+  - Recent organizational changes
+  - Why engineers might have sought out Cursor on their own
+  - What problems the team is facing
+- Push back on everything initially
+- Only warm up if the rep demonstrates they understand your pain and can help
+- If they connect Cursor to solving reorg velocity issues, become interested in a POC
+
+WHEN TO END:
+- If the rep gets defensive or just pitches features: stay cold, end call uninterested
+- If the rep discovers the reorg pain and positions Cursor as a solution: agree to a POC/pilot
+- Signal clearly whether you'd move forward or not
+
+FORMAT YOUR RESPONSES:
+Use this format to show both personas:
+**[Sarah - VP Eng]:** [her dialogue]
+**[Marcus - Security]:** [his dialogue]
+
+Start the call hostile and skeptical about Cursor being a security risk.`;
+
+                try {
+                    const response = await fetch("https://api.anthropic.com/v1/messages", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            model: "claude-sonnet-4-20250514",
+                            max_tokens: 1000,
+                            system: systemPrompt,
+                            messages: [
+                                {
+                                    role: "user",
+                                    content: "Start the call. The Cursor AE has just joined the Zoom call with you both."
+                                }
+                            ],
+                        })
+                    });
+
+                    const data = await response.json();
+                    const aiMessage = data.content[0].text;
+
+                    conversationHistory.current = [
+                        { role: "user", content: "Start the call. The Cursor AE has just joined the Zoom call with you both." },
+                        { role: "assistant", content: aiMessage }
+                    ];
+
+                    setMessages([
+                        {
+                            speaker: "Figma Team",
+                            content: aiMessage,
+                            isUser: false
+                        }
+                    ]);
+                } catch (error) {
+                    console.error("Error:", error);
+                    setMessages([
+                        {
+                            speaker: "System",
+                            content: "Error starting session. Please check console.",
+                            isUser: false
+                        }
+                    ]);
+                }
+
+                setIsLoading(false);
+            };
+
+            const sendMessage = async () => {
+                if (!inputValue.trim() || isLoading) return;
+
+                const userMessage = inputValue;
+                setInputValue('');
+                setIsLoading(true);
+
+                // Add user message to display
+                setMessages(prev => [...prev, {
+                    speaker: "You (Cursor AE)",
+                    content: userMessage,
+                    isUser: true
+                }]);
+
+                // Add to conversation history
+                conversationHistory.current.push({
+                    role: "user",
+                    content: userMessage
+                });
+
+                try {
+                    const response = await fetch("https://api.anthropic.com/v1/messages", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            model: "claude-sonnet-4-20250514",
+                            max_tokens: 1000,
+                            system: `You are roleplaying as TWO personas simultaneously in a sales call at Figma:
+
+1. **Sarah Chen - VP of Engineering at Figma**
+2. **Marcus Rodriguez - Head of Security at Figma**
+
+THE SCENARIO:
+- A Cursor AE requested this call
+- You've noticed engineers using Cursor without approval
+- Initial stance: hostile/concerned about security, want to remove Cursor immediately
+- You claim ignorance about what Cursor does and what value GitHub Copilot provides
+- You're skeptical and dismissive initially
+
+THE HIDDEN CONTEXT (only reveal through good discovery):
+- Figma is going through a major engineering reorganization
+- Teams are being restructured, new projects spinning up
+- Engineering velocity has been a concern during this transition
+- Some engineers found Cursor on their own and productivity improved
+- But you haven't connected these dots yet - the rep needs to help you see it
+
+YOUR BEHAVIOR:
+- Start cold and hostile about the security concern
+- Switch between Sarah (eng productivity angle) and Marcus (security angle) naturally
+- Make the rep work to get information out of you
+- Drop subtle hints about the reorg only if they ask good discovery questions
+- Push back on everything initially
+- Only warm up if the rep demonstrates they understand your pain
+- If they connect Cursor to solving reorg velocity issues, become interested in a POC
+
+FORMAT YOUR RESPONSES:
+**[Sarah - VP Eng]:** [her dialogue]
+**[Marcus - Security]:** [his dialogue]
+
+Stay in character. Push back appropriately. Make them earn the discovery.`,
+                            messages: conversationHistory.current,
+                        })
+                    });
+
+                    const data = await response.json();
+                    const aiMessage = data.content[0].text;
+
+                    conversationHistory.current.push({
+                        role: "assistant",
+                        content: aiMessage
+                    });
+
+                    setMessages(prev => [...prev, {
+                        speaker: "Figma Team",
+                        content: aiMessage,
+                        isUser: false
+                    }]);
+                } catch (error) {
+                    console.error("Error:", error);
+                    setMessages(prev => [...prev, {
+                        speaker: "System",
+                        content: "Error sending message. Please try again.",
+                        isUser: false
+                    }]);
+                }
+
+                setIsLoading(false);
+            };
+
+            const endSession = async () => {
+                setIsLoading(true);
+                setSessionEnded(true);
+
+                try {
+                    const response = await fetch("https://api.anthropic.com/v1/messages", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            model: "claude-sonnet-4-20250514",
+                            max_tokens: 2000,
+                            messages: [
+                                {
+                                    role: "user",
+                                    content: `You just finished roleplaying as Sarah (VP Eng) and Marcus (Security Head) at Figma in a sales call with a Cursor AE.
+
+Here's the full conversation:
+
+${conversationHistory.current.map(msg => 
+    `${msg.role === 'user' ? 'CURSOR AE' : 'FIGMA TEAM'}: ${msg.content}`
+).join('\n\n')}
+
+Now provide honest, direct feedback as if you're the Cursor sales leader debriefing this rep:
+
+1. **Outcome**: Would Sarah and Marcus move forward with a POC? Why or why not?
+
+2. **What worked**: What did the rep do well? Specific examples.
+
+3. **What didn't work**: Where did they miss opportunities or make mistakes?
+
+4. **The reorg discovery**: Did they uncover the engineering reorganization pain? How well did they connect it to Cursor's value?
+
+5. **Key lesson**: One specific thing to do differently next time.
+
+Be direct and honest. This is coaching, not a compliment sandwich.`
+                                }
+                            ],
+                        })
+                    });
+
+                    const data = await response.json();
+                    setFeedback(data.content[0].text);
+                } catch (error) {
+                    console.error("Error:", error);
+                    setFeedback("Error generating feedback. Please try again.");
+                }
+
+                setIsLoading(false);
+            };
+
+            const resetSession = () => {
+                setSessionStarted(false);
+                setMessages([]);
+                setInputValue('');
+                setSessionEnded(false);
+                setFeedback('');
+                conversationHistory.current = [];
+            };
+
+            if (!sessionStarted) {
+                return (
+                    <div className="container">
+                        <div className="header">
+                            <h1>Cursor Interview Prep</h1>
+                            <p>Master the Figma adversarial roleplay scenario</p>
+                        </div>
+
+                        <div className="setup-section">
+                            <h2>The Scenario</h2>
+                            <div className="scenario-box">
+                                <h3>Your Role</h3>
+                                <p>You're an Account Executive at Cursor. You requested this call after hearing engineers at Figma were using your product.</p>
+                            </div>
+
+                            <div className="scenario-box">
+                                <h3>The Buyers (Both in the room)</h3>
+                                <ul>
+                                    <li><strong>Sarah Chen</strong> - VP of Engineering</li>
+                                    <li><strong>Marcus Rodriguez</strong> - Head of Security</li>
+                                </ul>
+                            </div>
+
+                            <div className="scenario-box">
+                                <h3>The Challenge</h3>
+                                <ul>
+                                    <li>They're hostile - want to remove Cursor for "security reasons"</li>
+                                    <li>They claim ignorance about what Cursor does and why engineers need it</li>
+                                    <li>They also don't understand what value Copilot provides</li>
+                                    <li><strong>Hidden context:</strong> Figma is going through an engineering reorg (you need to discover this)</li>
+                                </ul>
+                            </div>
+
+                            <div className="scenario-box">
+                                <h3>Your Goal</h3>
+                                <p>Navigate from "remove this security risk" to "let's run a POC with the team going through the reorg"</p>
+                            </div>
+
+                            <div className="warning">
+                                <strong>⚠️ This uses the Anthropic API</strong>
+                                <p>The API key is handled by claude.ai - no setup needed. Just start the session.</p>
+                            </div>
+
+                            <button className="start-button" onClick={startSession}>
+                                Start Interview Roleplay
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (sessionEnded) {
+                return (
+                    <div className="container">
+                        <div className="header">
+                            <h1>Session Complete</h1>
+                            <p>Here's your feedback</p>
+                        </div>
+
+                        <div className="feedback-section">
+                            <h2>Performance Feedback</h2>
+                            <div className="feedback-content">
+                                {isLoading ? (
+                                    <p className="loading">Generating feedback...</p>
+                                ) : (
+                                    feedback
+                                )}
+                            </div>
+                        </div>
+
+                        <button className="start-button" onClick={resetSession}>
+                            Start New Session
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>Live Call - Figma</h1>
+                        <p>Navigate the conversation to discover the reorg and earn a POC</p>
+                    </div>
+
+                    <div className="chat-container">
+                        <div className="chat-header">
+                            <h3>Sales Call in Progress</h3>
+                            <div className="participants">
+                                <div className="participant">Sarah Chen - VP Engineering</div>
+                                <div className="participant">Marcus Rodriguez - Head of Security</div>
+                            </div>
+                        </div>
+
+                        <div className="messages">
+                            {messages.map((msg, idx) => (
+                                <div key={idx} className={`message ${msg.isUser ? 'user' : ''}`}>
+                                    <div className="message-header">
+                                        <span className={`speaker-name ${msg.isUser ? 'user' : ''}`}>
+                                            {msg.speaker}
+                                        </span>
+                                    </div>
+                                    <div className="message-content">
+                                        {msg.content}
+                                    </div>
+                                </div>
+                            ))}
+                            {isLoading && (
+                                <div className="message">
+                                    <div className="message-content loading">
+                                        Figma team is responding...
+                                    </div>
+                                </div>
+                            )}
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        <div className="input-section">
+                            <div className="input-container">
+                                <textarea
+                                    className="message-input"
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            sendMessage();
+                                        }
+                                    }}
+                                    placeholder="Type your response... (Shift+Enter for new line)"
+                                    disabled={isLoading}
+                                />
+                                <button
+                                    className="send-button"
+                                    onClick={sendMessage}
+                                    disabled={isLoading || !inputValue.trim()}
+                                >
+                                    Send
+                                </button>
+                            </div>
+                            <button className="end-button" onClick={endSession}>
+                                End Call & Get Feedback
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
