@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Interview Prep Platform</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            border-bottom: 1px solid #333;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #999;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .scenario-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .scenario-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .company-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .difficulty-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .difficulty-hard {
+            background: #e53e3e33;
+            color: #fc8181;
+            border: 1px solid #e53e3e;
+        }
+
+        .difficulty-medium {
+            background: #ed8a3633;
+            color: #f6ad55;
+            border: 1px solid #ed8a36;
+        }
+
+        .scenario-description {
+            color: #ccc;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .scenario-details {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+
+        .detail-item {
+            margin: 12px 0;
+            display: flex;
+            align-items: start;
+            gap: 10px;
+        }
+
+        .detail-label {
+            color: #667eea;
+            font-weight: 600;
+            min-width: 80px;
+        }
+
+        .detail-value {
+            color: #999;
+            flex: 1;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .back-button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: background 0.2s;
+        }
+
+        .back-button:hover {
+            background: #444;
+        }
+
+        .briefing-section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 1px solid #333;
+        }
+
+        .briefing-header {
+            margin-bottom: 30px;
+        }
+
+        .briefing-header h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .briefing-header p {
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .briefing-box {
+            background: #0d1117;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .briefing-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .briefing-box p {
+            color: #ccc;
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        .briefing-box ul {
+            margin: 15px 0 15px 20px;
+            color: #ccc;
+        }
+
+        .briefing-box li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .personas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .persona-card {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #333;
+        }
+
+        .persona-name {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .persona-role {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .chat-container {
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #333;
+            margin: 30px 0;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+            background: #0d1117;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .chat-header h3 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .participants {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .participant {
+            background: #1a1a1a;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #999;
+            border: 1px solid #333;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .speaker-name {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .speaker-name.user {
+            color: #48bb78;
+        }
+
+        .message-content {
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+            line-height: 1.8;
+        }
+
+        .message.user .message-content {
+            border-left-color: #48bb78;
+        }
+
+        .input-section {
+            padding: 20px;
+            border-top: 1px solid #333;
+            background: #0d1117;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .send-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .send-button:hover {
+            background: #5568d3;
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .end-button {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .end-button:hover {
+            background: #c53030;
+        }
+
+        .feedback-section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 1px solid #333;
+        }
+
+        .feedback-section h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .feedback-content {
+            background: #0d1117;
+            padding: 25px;
+            border-radius: 8px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .loading {
+            color: #999;
+            font-style: italic;
+        }
+
+        .warning {
+            background: #2d1f1f;
+            border: 1px solid #e53e3e;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #fc8181;
+        }
+
+        .info-box {
+            background: #1f2d3d;
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #9bb5e0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // SCENARIO CONFIGURATIONS
+        const SCENARIOS = {
+            cursor: {
+                id: 'cursor',
+                company: 'Cursor',
+                companyDescription: 'AI-first code editor',
+                difficulty: 'hard',
+                description: 'Navigate a hostile security conversation to discover an engineering reorg and position Cursor as the solution for velocity during organizational change.',
+                targetAccount: 'Figma',
+                personas: [
+                    { name: 'Sarah Chen', role: 'VP of Engineering' },
+                    { name: 'Marcus Rodriguez', role: 'Head of Security' }
+                ],
+                yourRole: 'Account Executive at Cursor',
+                initialStance: 'Hostile - want to remove Cursor immediately due to security concerns',
+                hiddenContext: 'Figma is going through a major engineering reorganization. Teams are being restructured, velocity is suffering, and some engineers found Cursor on their own to stay productive.',
+                successCriteria: 'Discover the reorg pain, connect it to engineering velocity, and secure agreement for a POC with the affected teams.',
+                systemPrompt: `You are roleplaying as TWO personas simultaneously in a sales call at Figma:
+
+1. **Sarah Chen - VP of Engineering at Figma**
+2. **Marcus Rodriguez - Head of Security at Figma**
+
+THE SCENARIO:
+- A Cursor AE has requested this call
+- You've noticed some engineers using Cursor without approval
+- Your initial stance: hostile/concerned about security, want to remove Cursor immediately
+- You claim ignorance about what Cursor does and what value GitHub Copilot provides
+- You're skeptical and dismissive initially
+
+THE HIDDEN CONTEXT (only reveal through good discovery):
+- Figma is going through a major engineering reorganization
+- Teams are being restructured, new projects spinning up
+- Engineering velocity has been a concern during this transition
+- Some engineers found Cursor on their own and productivity improved
+- But you haven't connected these dots yet - the rep needs to help you see it
+
+YOUR BEHAVIOR:
+- Start cold and hostile about the security concern
+- Switch between Sarah (eng productivity angle) and Marcus (security angle) naturally
+- Make the rep work to get information out of you
+- Drop subtle hints about the reorg only if they ask good discovery questions about:
+  - Current engineering challenges
+  - Recent organizational changes
+  - Why engineers might have sought out Cursor on their own
+  - What problems the team is facing
+- Push back on everything initially
+- Only warm up if the rep demonstrates they understand your pain and can help
+- If they connect Cursor to solving reorg velocity issues, become interested in a POC
+
+WHEN TO END:
+- If the rep gets defensive or just pitches features: stay cold, end call uninterested
+- If the rep discovers the reorg pain and positions Cursor as a solution: agree to a POC/pilot
+- Signal clearly whether you'd move forward or not
+
+FORMAT YOUR RESPONSES:
+Use this format to show both personas:
+**[Sarah - VP Eng]:** [her dialogue]
+**[Marcus - Security]:** [his dialogue]
+
+Start the call hostile and skeptical about Cursor being a security risk.`,
+                startMessage: 'Start the call. The Cursor AE has just joined the Zoom call with you both.'
+            },
+            
+            anthropic: {
+                id: 'anthropic',
+                company: 'Anthropic',
+                companyDescription: 'Enterprise AI platform (Claude)',
+                difficulty: 'hard',
+                description: 'Convince a skeptical CTO who believes AI is hype and that their existing vendor relationships are sufficient. Uncover concerns about AI governance and compliance.',
+                targetAccount: 'Fortune 500 Financial Services Company',
+                personas: [
+                    { name: 'David Park', role: 'CTO' },
+                    { name: 'Jennifer Liu', role: 'VP of Enterprise Architecture' }
+                ],
+                yourRole: 'Enterprise Account Executive at Anthropic',
+                initialStance: 'Skeptical - thinks AI is overhyped, happy with existing vendors (OpenAI/Azure)',
+                hiddenContext: 'Their board mandated an AI governance policy after a data leak incident. They need a partner who takes safety seriously, but they don\'t trust AI vendors yet. Also concerned about vendor lock-in.',
+                successCriteria: 'Discover the governance mandate and data leak incident, position Claude\'s safety approach as differentiated, and get agreement to review your enterprise security documentation.',
+                systemPrompt: `You are roleplaying as TWO personas simultaneously in a sales call at a Fortune 500 financial services company:
+
+1. **David Park - CTO**
+2. **Jennifer Liu - VP of Enterprise Architecture**
+
+THE SCENARIO:
+- An Anthropic AE requested this call after a warm intro from a mutual connection
+- You're skeptical about AI - think it's overhyped
+- You already use OpenAI/Azure for some pilots
+- Your initial stance: defensive, dismissive of "yet another AI vendor"
+
+THE HIDDEN CONTEXT (only reveal through good discovery):
+- Your board mandated a strict AI governance policy 3 months ago
+- This came after a minor data leak incident involving an AI tool
+- You need a partner who takes safety, compliance, and governance seriously
+- You're concerned about vendor lock-in and want flexibility
+- You don't trust AI vendors - they all claim to be "safe and responsible"
+
+YOUR BEHAVIOR:
+- Start dismissive: "We already have OpenAI, why do we need another AI vendor?"
+- Push back on any generic AI pitch
+- David focuses on technical architecture and vendor lock-in concerns
+- Jennifer focuses on governance, compliance, and risk management
+- Drop hints about the governance mandate only if they ask about:
+  - Current challenges with AI adoption
+  - Board or compliance requirements
+  - What's holding back broader AI deployment
+  - Security or data governance concerns
+- Only warm up if they differentiate on safety/governance (not just "better model")
+- If they discover the governance need and position Anthropic appropriately, agree to review security docs
+
+FORMAT YOUR RESPONSES:
+**[David - CTO]:** [his dialogue]
+**[Jennifer - VP Arch]:** [her dialogue]
+
+Start skeptical and dismissive.`,
+                startMessage: 'Start the call. The Anthropic AE has just joined the Zoom call.'
+            },
+
+            baseten: {
+                id: 'baseten',
+                company: 'Baseten',
+                companyDescription: 'AI infrastructure & deployment platform',
+                difficulty: 'medium',
+                description: 'Convert a VP of Engineering who is frustrated with their current ML infrastructure. They\'re spending too much time on infrastructure instead of shipping features.',
+                targetAccount: 'Series B Consumer App ($200M valuation)',
+                personas: [
+                    { name: 'Alex Kumar', role: 'VP of Engineering' },
+                    { name: 'Rachel Torres', role: 'ML Platform Lead' }
+                ],
+                yourRole: 'Account Executive at Baseten',
+                initialStance: 'Frustrated but not urgent - currently using a mix of self-hosted and managed solutions',
+                hiddenContext: 'They\'re about to launch a major AI feature that\'s 2 months behind schedule. Their ML team is drowning in infrastructure work. CEO is pressuring them to ship faster.',
+                successCriteria: 'Discover the delayed feature launch and resource constraints, position Baseten as enabling faster iteration, and secure a technical evaluation with the ML team.',
+                systemPrompt: `You are roleplaying as TWO personas in a sales call at a Series B consumer app:
+
+1. **Alex Kumar - VP of Engineering**
+2. **Rachel Torres - ML Platform Lead**
+
+THE SCENARIO:
+- A Baseten AE requested this call after seeing you're hiring ML infrastructure engineers
+- You're frustrated with your current setup (mix of self-hosted models and AWS Bedrock)
+- Initial stance: interested but not urgent, skeptical about "yet another platform"
+
+THE HIDDEN CONTEXT (only reveal through good discovery):
+- You're launching a major AI-powered feature that's 2 months behind schedule
+- Your small ML team (3 people) is spending 70% of time on infrastructure
+- CEO is frustrated about slow AI feature velocity
+- You just got approved to hire 2 more ML engineers, but can't find good candidates
+- The real problem: need to ship AI features faster with current team
+
+YOUR BEHAVIOR:
+- Start by explaining your current setup (some self-hosted, some Bedrock)
+- Alex is focused on shipping velocity and team efficiency
+- Rachel is deep in the infrastructure pain, but defensive about their choices
+- Be somewhat open but not desperate
+- Drop hints about the delayed launch only if they ask about:
+  - Current AI initiatives or roadmap
+  - Team structure and resources
+  - What's slowing down AI development
+  - Infrastructure pain points
+- Warm up if they focus on "ship faster with fewer people" not just "better infrastructure"
+- If they connect Baseten to solving the velocity problem, agree to a technical eval
+
+FORMAT YOUR RESPONSES:
+**[Alex - VP Eng]:** [his dialogue]
+**[Rachel - ML Lead]:** [her dialogue]
+
+Start somewhat interested but not urgent.`,
+                startMessage: 'Start the call. The Baseten AE has just joined the Zoom call.'
+            }
+        };
+
+        function App() {
+            const [currentView, setCurrentView] = useState('home'); // 'home', 'briefing', 'session', 'feedback'
+            const [selectedScenario, setSelectedScenario] = useState(null);
+            const [messages, setMessages] = useState([]);
+            const [inputValue, setInputValue] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            const [feedback, setFeedback] = useState('');
+            const messagesEndRef = useRef(null);
+            const conversationHistory = useRef([]);
+
+            const scrollToBottom = () => {
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+
+            useEffect(() => {
+                scrollToBottom();
+            }, [messages]);
+
+            const selectScenario = (scenarioId) => {
+                setSelectedScenario(SCENARIOS[scenarioId]);
+                setCurrentView('briefing');
+            };
+
+            const startSession = async () => {
+                setCurrentView('session');
+                setIsLoading(true);
+
+                try {
+                    const response = await fetch("https://api.anthropic.com/v1/messages", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            model: "claude-sonnet-4-20250514",
+                            max_tokens: 1000,
+                            system: selectedScenario.systemPrompt,
+                            messages: [
+                                {
+                                    role: "user",
+                                    content: selectedScenario.startMessage
+                                }
+                            ],
+                        })
+                    });
+
+                    const data = await response.json();
+                    const aiMessage = data.content[0].text;
+
+                    conversationHistory.current = [
+                        { role: "user", content: selectedScenario.startMessage },
+                        { role: "assistant", content: aiMessage }
+                    ];
+
+                    setMessages([
+                        {
+                            speaker: `${selectedScenario.targetAccount} Team`,
+                            content: aiMessage,
+                            isUser: false
+                        }
+                    ]);
+                } catch (error) {
+                    console.error("Error:", error);
+                    setMessages([
+                        {
+                            speaker: "System",
+                            content: "Error starting session. Please check console.",
+                            isUser: false
+                        }
+                    ]);
+                }
+
+                setIsLoading(false);
+            };
+
+            const sendMessage = async () => {
+                if (!inputValue.trim() || isLoading) return;
+
+                const userMessage = inputValue;
+                setInputValue('');
+                setIsLoading(true);
+
+                setMessages(prev => [...prev, {
+                    speaker: `You (${selectedScenario.company} AE)`,
+                    content: userMessage,
+                    isUser: true
+                }]);
+
+                conversationHistory.current.push({
+                    role: "user",
+                    content: userMessage
+                });
+
+                try {
+                    const response = await fetch("https://api.anthropic.com/v1/messages", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            model: "claude-sonnet-4-20250514",
+                            max_tokens: 1000,
+                            system: selectedScenario.systemPrompt,
+                            messages: conversationHistory.current,
+                        })
+                    });
+
+                    const data = await response.json();
+                    const aiMessage = data.content[0].text;
+
+                    conversationHistory.current.push({
+                        role: "assistant",
+                        content: aiMessage
+                    });
+
+                    setMessages(prev => [...prev, {
+                        speaker: `${selectedScenario.targetAccount} Team`,
+                        content: aiMessage,
+                        isUser: false
+                    }]);
+                } catch (error) {
+                    console.error("Error:", error);
+                    setMessages(prev => [...prev, {
+                        speaker: "System",
+                        content: "Error sending message. Please try again.",
+                        isUser: false
+                    }]);
+                }
+
+                setIsLoading(false);
+            };
+
+            const endSession = async () => {
+                setIsLoading(true);
+                setCurrentView('feedback');
+
+                try {
+                    const response = await fetch("https://api.anthropic.com/v1/messages", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            model: "claude-sonnet-4-20250514",
+                            max_tokens: 2000,
+                            messages: [
+                                {
+                                    role: "user",
+                                    content: `You just finished roleplaying as buyer personas in a ${selectedScenario.company} sales call.
+
+Scenario: ${selectedScenario.description}
+Target Account: ${selectedScenario.targetAccount}
+Hidden Context: ${selectedScenario.hiddenContext}
+Success Criteria: ${selectedScenario.successCriteria}
+
+Here's the full conversation:
+
+${conversationHistory.current.map(msg => 
+    `${msg.role === 'user' ? selectedScenario.company.toUpperCase() + ' AE' : selectedScenario.targetAccount.toUpperCase() + ' TEAM'}: ${msg.content}`
+).join('\n\n')}
+
+Now provide honest, direct feedback as if you're the ${selectedScenario.company} sales leader debriefing this rep:
+
+1. **Outcome**: Would the buyers move forward? Why or why not?
+
+2. **What worked**: What did the rep do well? Specific examples.
+
+3. **What didn't work**: Where did they miss opportunities or make mistakes?
+
+4. **Discovery quality**: Did they uncover the hidden context (${selectedScenario.hiddenContext})? How well did they connect it to ${selectedScenario.company}'s value?
+
+5. **Key lesson**: One specific thing to do differently next time.
+
+Be direct and honest. This is coaching, not a compliment sandwich.`
+                                }
+                            ],
+                        })
+                    });
+
+                    const data = await response.json();
+                    setFeedback(data.content[0].text);
+                } catch (error) {
+                    console.error("Error:", error);
+                    setFeedback("Error generating feedback. Please try again.");
+                }
+
+                setIsLoading(false);
+            };
+
+            const resetToHome = () => {
+                setCurrentView('home');
+                setSelectedScenario(null);
+                setMessages([]);
+                setInputValue('');
+                setFeedback('');
+                conversationHistory.current = [];
+            };
+
+            // HOME VIEW
+            if (currentView === 'home') {
+                return (
+                    <div className="container">
+                        <div className="header">
+                            <h1>Sales Interview Prep</h1>
+                            <p>Master adversarial roleplays for top B2B sales positions. Practice discovery, objection handling, and closing under pressure.</p>
+                        </div>
+
+                        <div className="scenarios-grid">
+                            {Object.values(SCENARIOS).map(scenario => (
+                                <div 
+                                    key={scenario.id} 
+                                    className="scenario-card"
+                                    onClick={() => selectScenario(scenario.id)}
+                                >
+                                    <div className="scenario-header">
+                                        <div className="company-name">{scenario.company}</div>
+                                        <div className={`difficulty-badge difficulty-${scenario.difficulty}`}>
+                                            {scenario.difficulty.toUpperCase()}
+                                        </div>
+                                    </div>
+
+                                    <div className="scenario-description">
+                                        {scenario.description}
+                                    </div>
+
+                                    <div className="scenario-details">
+                                        <div className="detail-item">
+                                            <span className="detail-label">Your Role:</span>
+                                            <span className="detail-value">{scenario.yourRole}</span>
+                                        </div>
+                                        <div className="detail-item">
+                                            <span className="detail-label">Account:</span>
+                                            <span className="detail-value">{scenario.targetAccount}</span>
+                                        </div>
+                                        <div className="detail-item">
+                                            <span className="detail-label">Personas:</span>
+                                            <span className="detail-value">
+                                                {scenario.personas.map(p => p.role).join(', ')}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <button className="start-button">
+                                        Start Scenario →
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="info-box">
+                            <strong>How it works:</strong> Select a scenario, review the briefing, then jump into a live roleplay with AI buyers who challenge you realistically. End the call to get detailed feedback on your performance.
+                        </div>
+                    </div>
+                );
+            }
+
+            // BRIEFING VIEW
+            if (currentView === 'briefing') {
+                return (
+                    <div className="container">
+                        <button className="back-button" onClick={resetToHome}>
+                            ← Back to Scenarios
+                        </button>
+
+                        <div className="briefing-section">
+                            <div className="briefing-header">
+                                <h2>{selectedScenario.company} - Pre-Call Briefing</h2>
+                                <p>Review this information before starting the roleplay</p>
+                            </div>
+
+                            <div className="briefing-box">
+                                <h3>Your Role</h3>
+                                <p>{selectedScenario.yourRole}</p>
+                            </div>
+
+                            <div className="briefing-box">
+                                <h3>Target Account</h3>
+                                <p><strong>{selectedScenario.targetAccount}</strong></p>
+                            </div>
+
+                            <div className="briefing-box">
+                                <h3>Who You're Meeting</h3>
+                                <div className="personas-grid">
+                                    {selectedScenario.personas.map((persona, idx) => (
+                                        <div key={idx} className="persona-card">
+                                            <div className="persona-name">{persona.name}</div>
+                                            <div className="persona-role">{persona.role}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="briefing-box">
+                                <h3>Initial Buyer Stance</h3>
+                                <p>{selectedScenario.initialStance}</p>
+                            </div>
+
+                            <div className="briefing-box">
+                                <h3>Your Challenge</h3>
+                                <p>{selectedScenario.description}</p>
+                            </div>
+
+                            <div className="briefing-box">
+                                <h3>Success Criteria</h3>
+                                <p>{selectedScenario.successCriteria}</p>
+                            </div>
+
+                            <div className="warning">
+                                <strong>⚠️ Hidden Context</strong>
+                                <p>There's critical information the buyers won't volunteer. You'll need strong discovery to uncover it. The roleplay AI knows this context but won't reveal it unless you ask the right questions.</p>
+                            </div>
+
+                            <button className="start-button" onClick={startSession}>
+                                Start Roleplay →
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // SESSION VIEW
+            if (currentView === 'session') {
+                return (
+                    <div className="container">
+                        <button className="back-button" onClick={resetToHome}>
+                            ← Exit & Return Home
+                        </button>
+
+                        <div className="header">
+                            <h1>Live Call - {selectedScenario.targetAccount}</h1>
+                            <p>{selectedScenario.successCriteria}</p>
+                        </div>
+
+                        <div className="chat-container">
+                            <div className="chat-header">
+                                <h3>Sales Call in Progress</h3>
+                                <div className="participants">
+                                    {selectedScenario.personas.map((persona, idx) => (
+                                        <div key={idx} className="participant">
+                                            {persona.name} - {persona.role}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="messages">
+                                {messages.map((msg, idx) => (
+                                    <div key={idx} className={`message ${msg.isUser ? 'user' : ''}`}>
+                                        <div className="message-header">
+                                            <span className={`speaker-name ${msg.isUser ? 'user' : ''}`}>
+                                                {msg.speaker}
+                                            </span>
+                                        </div>
+                                        <div className="message-content">
+                                            {msg.content}
+                                        </div>
+                                    </div>
+                                ))}
+                                {isLoading && (
+                                    <div className="message">
+                                        <div className="message-content loading">
+                                            {selectedScenario.targetAccount} team is responding...
+                                        </div>
+                                    </div>
+                                )}
+                                <div ref={messagesEndRef} />
+                            </div>
+
+                            <div className="input-section">
+                                <div className="input-container">
+                                    <textarea
+                                        className="message-input"
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                sendMessage();
+                                            }
+                                        }}
+                                        placeholder="Type your response... (Shift+Enter for new line)"
+                                        disabled={isLoading}
+                                    />
+                                    <button
+                                        className="send-button"
+                                        onClick={sendMessage}
+                                        disabled={isLoading || !inputValue.trim()}
+                                    >
+                                        Send
+                                    </button>
+                                </div>
+                                <button className="end-button" onClick={endSession}>
+                                    End Call & Get Feedback
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // FEEDBACK VIEW
+            if (currentView === 'feedback') {
+                return (
+                    <div className="container">
+                        <div className="header">
+                            <h1>Session Complete</h1>
+                            <p>{selectedScenario.company} - {selectedScenario.targetAccount}</p>
+                        </div>
+
+                        <div className="feedback-section">
+                            <h2>Performance Feedback</h2>
+                            <div className="feedback-content">
+                                {isLoading ? (
+                                    <p className="loading">Analyzing your performance...</p>
+                                ) : (
+                                    feedback
+                                )}
+                            </div>
+                        </div>
+
+                        <button className="start-button" onClick={resetToHome}>
+                            ← Back to Scenarios
+                        </button>
+                    </div>
+                );
+            }
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
