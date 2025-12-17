@@ -968,6 +968,18 @@ Start somewhat interested but not urgent.`,
                 setCallStatus('connecting');
                 setIsLoading(true);
 
+                // Create voice-specific system prompt with conversational instructions
+                const voiceSystemPrompt = `${selectedScenario.systemPrompt}
+
+CRITICAL VOICE MODE INSTRUCTIONS:
+- Speak as ONE persona at a time (either ${selectedScenario.personas[0].name} OR ${selectedScenario.personas[1].name}, NEVER both simultaneously)
+- Keep each response to 2-3 sentences maximum
+- Be conversational and natural - this is voice, not text chat
+- Use a natural speaking style without formatting markers like **[Name]:** or asterisks
+- The other persona should only jump in when they have something specifically relevant to add to the conversation
+- Switch personas naturally when appropriate, but don't force both to speak every turn
+- Respond quickly and concisely - avoid long explanations or verbose answers`;
+
                 try {
                     // Start call with inline assistant configuration
                     await vapiInstance.current.start({
@@ -977,7 +989,7 @@ Start somewhat interested but not urgent.`,
                             messages: [
                                 {
                                     role: "system",
-                                    content: selectedScenario.systemPrompt
+                                    content: voiceSystemPrompt
                                 }
                             ]
                         },
