@@ -33,7 +33,8 @@ This platform simulates realistic, challenging sales calls where AI plays skepti
 ## 🛠️ Built With
 
 - React (via CDN)
-- Anthropic Claude API
+- Anthropic Claude API for text-based roleplays
+- Vapi.ai Voice SDK for realistic voice conversations
 - Pure HTML/CSS/JavaScript (no build process needed)
 
 ## 💡 Why I Built This
@@ -51,10 +52,28 @@ The Anthropic API is handled through the claude.ai environment - no API key setu
 ## 📈 Roadmap
 
 - [ ] Add more scenarios (Opal, OpenAI, etc.)
-- [ ] Voice mode for realistic conversation practice
+- [x] Voice mode for realistic conversation practice
 - [ ] Session recording and performance analytics
 - [ ] Custom scenario builder
 - [ ] Scoring system for discovery quality
+
+## 🎙️ Voice Mode
+
+The platform now supports realistic voice conversations powered by Vapi.ai! You can:
+
+- Switch between **Text Chat** and **Voice Call** modes before starting any scenario
+- Practice with natural voice interactions using AI-powered speech
+- See real-time transcripts of your voice conversations
+- Get the same detailed feedback after voice sessions
+
+**To use Voice Mode:**
+1. Select any scenario from the home screen
+2. Review the briefing
+3. Toggle to "🎙️ Voice Call" mode
+4. Click "Start Voice Call" and speak naturally
+5. End the call when ready and get your feedback
+
+Voice mode uses your Vapi public API key (configured in the code) and provides a more realistic interview practice experience.
 
 ## 🤝 Contributing
 
