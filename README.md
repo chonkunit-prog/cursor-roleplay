@@ -33,7 +33,8 @@ This platform simulates realistic, challenging sales calls where AI plays skepti
 ## 🛠️ Built With
 
 - React (via CDN)
-- Anthropic Claude API for text-based roleplays
+- Anthropic Claude API (via Requesty gateway) for text-based roleplays
+- Requesty.ai for API cost tracking and multi-model support
 - Vapi.ai Voice SDK for realistic voice conversations
 - Pure HTML/CSS/JavaScript (no build process needed)
 
@@ -43,11 +44,12 @@ As an AE going through multiple interview processes, I noticed companies use adv
 
 ## 🔧 How to Use Locally
 
-1. Download `index.html`
-2. Open it in your browser
-3. Start practicing
+1. Download `index.html` and the `/api` folder
+2. Deploy to Vercel or similar platform (needed for the serverless API function)
+3. Open the deployed URL in your browser
+4. Start practicing
 
-The Anthropic API is handled through the claude.ai environment - no API key setup needed for basic use.
+The API key is managed through Requesty for cost tracking across different models.
 
 ## 📈 Roadmap
 

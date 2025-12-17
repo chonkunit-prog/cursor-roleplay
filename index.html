@@ -926,9 +926,6 @@ Start somewhat skeptical but professional.`,
             const [inputValue, setInputValue] = useState('');
             const [isLoading, setIsLoading] = useState(false);
             const [feedback, setFeedback] = useState('');
-            const [apiKey, setApiKey] = useState(localStorage.getItem('anthropic_api_key') || '');
-            const [showApiKeyModal, setShowApiKeyModal] = useState(false);
-            const [tempApiKey, setTempApiKey] = useState('');
             const [useVoiceMode, setUseVoiceMode] = useState(false);
             const [isCallActive, setIsCallActive] = useState(false);
             const [callStatus, setCallStatus] = useState('idle'); // 'idle', 'connecting', 'active', 'ended'
@@ -1089,23 +1086,7 @@ CRITICAL VOICE MODE INSTRUCTIONS:
                 setCurrentView('briefing');
             };
 
-            const saveApiKey = () => {
-                localStorage.setItem('anthropic_api_key', tempApiKey);
-                setApiKey(tempApiKey);
-                setShowApiKeyModal(false);
-                setTempApiKey('');
-            };
-
-            const checkApiKey = () => {
-                if (!apiKey) {
-                    setShowApiKeyModal(true);
-                    return false;
-                }
-                return true;
-            };
-
             const startSession = async () => {
-                if (!checkApiKey()) return;
                 
                 setCurrentView('session');
                 setIsLoading(true);
@@ -1114,8 +1095,7 @@ CRITICAL VOICE MODE INSTRUCTIONS:
                     const response = await fetch("/api/chat", {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json",
-                            "x-api-key": apiKey
+                            "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
                             model: "claude-sonnet-4-20250514",
@@ -1181,8 +1161,7 @@ CRITICAL VOICE MODE INSTRUCTIONS:
                     const response = await fetch("/api/chat", {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json",
-                            "x-api-key": apiKey
+                            "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
                             model: "claude-sonnet-4-20250514",
@@ -1225,8 +1204,7 @@ CRITICAL VOICE MODE INSTRUCTIONS:
                     const response = await fetch("/api/chat", {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json",
-                            "x-api-key": apiKey
+                            "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
                             model: "claude-sonnet-4-20250514",
@@ -1295,48 +1273,7 @@ Be direct and honest. This is coaching, not a compliment sandwich.`
             // HOME VIEW
             if (currentView === 'home') {
                 return (
-                    <>
-                        {apiKey && (
-                            <div className="api-key-status">
-                                ✓ API Key Configured
-                            </div>
-                        )}
-                        
-                        {showApiKeyModal && (
-                            <div className="modal-overlay">
-                                <div className="modal-content">
-                                    <h2>🔑 Anthropic API Key Required</h2>
-                                    <p>
-                                        To use this platform, you need an Anthropic API key. 
-                                        Get yours at <a href="https://console.anthropic.com" target="_blank" className="api-key-link">console.anthropic.com</a> (free $5 credit available).
-                                    </p>
-                                    <input
-                                        type="password"
-                                        className="api-key-input"
-                                        placeholder="sk-ant-api03-..."
-                                        value={tempApiKey}
-                                        onChange={(e) => setTempApiKey(e.target.value)}
-                                    />
-                                    <div className="modal-buttons">
-                                        <button 
-                                            className="modal-button modal-button-secondary"
-                                            onClick={() => setShowApiKeyModal(false)}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button 
-                                            className="modal-button modal-button-primary"
-                                            onClick={saveApiKey}
-                                            disabled={!tempApiKey.trim()}
-                                        >
-                                            Save Key
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    
-                        <div className="container">
+                    <div className="container">
                             <div className="header">
                                 <h1>Sales Interview Prep</h1>
                                 <p>Master adversarial roleplays for top B2B sales positions. Practice discovery, objection handling, and closing under pressure.</p>
@@ -1387,15 +1324,7 @@ Be direct and honest. This is coaching, not a compliment sandwich.`
                         <div className="info-box">
                             <strong>How it works:</strong> Select a scenario, review the briefing, then jump into a live roleplay with AI buyers who challenge you realistically. End the call to get detailed feedback on your performance.
                         </div>
-                        
-                        {!apiKey && (
-                            <div className="warning">
-                                <strong>⚠️ API Key Not Configured</strong>
-                                <p>You'll need to add your Anthropic API key before starting a scenario. Click "Start Scenario" on any card to configure it.</p>
-                            </div>
-                        )}
                     </div>
-                    </>
                 );
             }
 
