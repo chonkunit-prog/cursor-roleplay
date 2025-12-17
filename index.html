@@ -7,6 +7,8 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Vapi SDK for voice calls -->
+    <script src="https://cdn.jsdelivr.net/gh/balacodeio/Vapi-Web-UMD@latest/dist/latest/vapi-web-bundle.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -540,6 +542,127 @@
             text-decoration: underline;
         }
 
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        .mode-button {
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            background: #1a1a1a;
+            color: #999;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .mode-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+
+        .mode-button:hover:not(.active) {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .voice-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .voice-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+
+        .voice-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        .voice-indicator.active {
+            background: #48bb78;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .voice-button {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .voice-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+
+        .voice-button.active {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
+        }
+
+        .voice-button.active:hover {
+            box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
+        }
+
+        .voice-transcript {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .transcript-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #667eea;
+            background: #1a1a1a;
+            border-radius: 4px;
+        }
+
+        .transcript-item.user {
+            border-left-color: #48bb78;
+        }
+
+        .transcript-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .transcript-label.user {
+            color: #48bb78;
+        }
+
         .api-key-status {
             position: fixed;
             top: 20px;
@@ -741,8 +864,12 @@ Start somewhat interested but not urgent.`,
             const [apiKey, setApiKey] = useState(localStorage.getItem('anthropic_api_key') || '');
             const [showApiKeyModal, setShowApiKeyModal] = useState(false);
             const [tempApiKey, setTempApiKey] = useState('');
+            const [useVoiceMode, setUseVoiceMode] = useState(false);
+            const [isCallActive, setIsCallActive] = useState(false);
+            const [callStatus, setCallStatus] = useState('idle'); // 'idle', 'connecting', 'active', 'ended'
             const messagesEndRef = useRef(null);
             const conversationHistory = useRef([]);
+            const vapiInstance = useRef(null);
 
             const scrollToBottom = () => {
                 messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -751,6 +878,116 @@ Start somewhat interested but not urgent.`,
             useEffect(() => {
                 scrollToBottom();
             }, [messages]);
+
+            // Initialize Vapi SDK
+            useEffect(() => {
+                if (typeof Vapi !== 'undefined') {
+                    vapiInstance.current = new Vapi('ae73bb58-cfcd-497d-a9df-e47f3b3b825b');
+
+                    // Set up event listeners
+                    vapiInstance.current.on('call-start', () => {
+                        setCallStatus('active');
+                        setIsCallActive(true);
+                        setMessages(prev => [...prev, {
+                            speaker: 'System',
+                            content: 'Voice call started. Start speaking!',
+                            isUser: false
+                        }]);
+                    });
+
+                    vapiInstance.current.on('call-end', () => {
+                        setCallStatus('ended');
+                        setIsCallActive(false);
+                        setMessages(prev => [...prev, {
+                            speaker: 'System',
+                            content: 'Voice call ended.',
+                            isUser: false
+                        }]);
+                    });
+
+                    vapiInstance.current.on('speech-start', () => {
+                        console.log('User started speaking');
+                    });
+
+                    vapiInstance.current.on('speech-end', () => {
+                        console.log('User stopped speaking');
+                    });
+
+                    vapiInstance.current.on('message', (message) => {
+                        console.log('Vapi message:', message);
+
+                        // Handle transcript messages
+                        if (message.type === 'transcript' && message.transcript) {
+                            const isUser = message.role === 'user';
+                            setMessages(prev => [...prev, {
+                                speaker: isUser ? `You (${selectedScenario.company} AE)` : `${selectedScenario.targetAccount} Team`,
+                                content: message.transcript,
+                                isUser: isUser
+                            }]);
+                        }
+                    });
+
+                    vapiInstance.current.on('error', (error) => {
+                        console.error('Vapi error:', error);
+                        setMessages(prev => [...prev, {
+                            speaker: 'System',
+                            content: `Error: ${error.message || 'Voice call error occurred'}`,
+                            isUser: false
+                        }]);
+                    });
+                }
+
+                return () => {
+                    if (vapiInstance.current) {
+                        vapiInstance.current.stop();
+                    }
+                };
+            }, []);
+
+            const startVoiceCall = async () => {
+                if (!vapiInstance.current || !selectedScenario) return;
+
+                setCallStatus('connecting');
+                setIsLoading(true);
+
+                try {
+                    // Start call with inline assistant configuration
+                    await vapiInstance.current.start({
+                        model: {
+                            provider: "openai",
+                            model: "gpt-4",
+                            messages: [
+                                {
+                                    role: "system",
+                                    content: selectedScenario.systemPrompt
+                                }
+                            ]
+                        },
+                        voice: {
+                            provider: "11labs",
+                            voiceId: "21m00Tcm4TlvDq8ikWAM" // Default professional voice
+                        },
+                        firstMessage: selectedScenario.startMessage,
+                        recordingEnabled: true
+                    });
+                } catch (error) {
+                    console.error('Failed to start voice call:', error);
+                    setCallStatus('idle');
+                    setMessages(prev => [...prev, {
+                        speaker: 'System',
+                        content: 'Failed to start voice call. Please try again.',
+                        isUser: false
+                    }]);
+                }
+
+                setIsLoading(false);
+            };
+
+            const stopVoiceCall = () => {
+                if (vapiInstance.current) {
+                    vapiInstance.current.stop();
+                }
+            };
 
             const selectScenario = (scenarioId) => {
                 setSelectedScenario(SCENARIOS[scenarioId]);
@@ -944,11 +1181,19 @@ Be direct and honest. This is coaching, not a compliment sandwich.`
             };
 
             const resetToHome = () => {
+                // Stop any active voice call
+                if (vapiInstance.current && isCallActive) {
+                    vapiInstance.current.stop();
+                }
+
                 setCurrentView('home');
                 setSelectedScenario(null);
                 setMessages([]);
                 setInputValue('');
                 setFeedback('');
+                setUseVoiceMode(false);
+                setIsCallActive(false);
+                setCallStatus('idle');
                 conversationHistory.current = [];
             };
 
@@ -1115,7 +1360,28 @@ Be direct and honest. This is coaching, not a compliment sandwich.`
                                 <p>There's critical information the buyers won't volunteer. You'll need strong discovery to uncover it. The roleplay AI knows this context but won't reveal it unless you ask the right questions.</p>
                             </div>
 
-                            <button className="start-button" onClick={startSession}>
+                            <div className="info-box">
+                                <strong>Choose Your Mode:</strong>
+                                <div className="mode-toggle">
+                                    <button
+                                        className={`mode-button ${!useVoiceMode ? 'active' : ''}`}
+                                        onClick={() => setUseVoiceMode(false)}
+                                    >
+                                        💬 Text Chat
+                                    </button>
+                                    <button
+                                        className={`mode-button ${useVoiceMode ? 'active' : ''}`}
+                                        onClick={() => setUseVoiceMode(true)}
+                                    >
+                                        🎙️ Voice Call
+                                    </button>
+                                </div>
+                                <p style={{marginTop: '15px', textAlign: 'center', fontSize: '0.9rem'}}>
+                                    {useVoiceMode ? 'Practice with realistic voice conversations' : 'Practice with text-based roleplay'}
+                                </p>
+                            </div>
+
+                            <button className="start-button" onClick={useVoiceMode ? () => { setCurrentView('session'); startVoiceCall(); } : startSession}>
                                 Start Roleplay →
                             </button>
                         </div>
@@ -1134,9 +1400,74 @@ Be direct and honest. This is coaching, not a compliment sandwich.`
                         <div className="header">
                             <h1>Live Call - {selectedScenario.targetAccount}</h1>
                             <p>{selectedScenario.successCriteria}</p>
+                            {useVoiceMode && (
+                                <div className="voice-status" style={{justifyContent: 'center', marginTop: '15px'}}>
+                                    <div className={`voice-indicator ${isCallActive ? 'active' : ''}`}></div>
+                                    <span>{callStatus === 'connecting' ? 'Connecting...' : callStatus === 'active' ? 'Voice Call Active' : callStatus === 'ended' ? 'Call Ended' : 'Ready to Call'}</span>
+                                </div>
+                            )}
                         </div>
 
-                        <div className="chat-container">
+                        {useVoiceMode ? (
+                            // Voice Mode UI
+                            <div className="chat-container">
+                                <div className="chat-header">
+                                    <h3>Voice Interview Session</h3>
+                                    <div className="participants">
+                                        {selectedScenario.personas.map((persona, idx) => (
+                                            <div key={idx} className="participant">
+                                                {persona.name} - {persona.role}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="voice-controls">
+                                    <button
+                                        className={`voice-button ${isCallActive ? 'active' : ''}`}
+                                        onClick={isCallActive ? stopVoiceCall : startVoiceCall}
+                                        disabled={isLoading}
+                                    >
+                                        {isLoading ? '⏳ Connecting...' : isCallActive ? '🔴 End Call' : '🎙️ Start Voice Call'}
+                                    </button>
+
+                                    <p style={{color: '#999', textAlign: 'center', maxWidth: '600px'}}>
+                                        {isCallActive ?
+                                            'Speak naturally into your microphone. The AI buyers will respond with voice.' :
+                                            'Click the button above to start a realistic voice conversation with the AI buyers.'
+                                        }
+                                    </p>
+
+                                    {messages.length > 0 && (
+                                        <div className="voice-transcript">
+                                            <h4 style={{color: '#667eea', marginBottom: '15px'}}>Conversation Transcript</h4>
+                                            {messages.map((msg, idx) => (
+                                                <div key={idx} className={`transcript-item ${msg.isUser ? 'user' : ''}`}>
+                                                    <div className={`transcript-label ${msg.isUser ? 'user' : ''}`}>
+                                                        {msg.speaker}
+                                                    </div>
+                                                    <div style={{color: '#ccc'}}>
+                                                        {msg.content}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="input-section">
+                                    <button
+                                        className="end-button"
+                                        onClick={endSession}
+                                        disabled={isCallActive}
+                                    >
+                                        {isCallActive ? 'End Voice Call First' : 'Get Performance Feedback'}
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            // Text Mode UI
+                            <div className="chat-container">
                             <div className="chat-header">
                                 <h3>Sales Call in Progress</h3>
                                 <div className="participants">
@@ -1199,6 +1530,7 @@ Be direct and honest. This is coaching, not a compliment sandwich.`
                                 </button>
                             </div>
                         </div>
+                        )}
                     </div>
                 );
             }
