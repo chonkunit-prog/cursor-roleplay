@@ -870,6 +870,7 @@ Start somewhat interested but not urgent.`,
             const messagesEndRef = useRef(null);
             const conversationHistory = useRef([]);
             const vapiInstance = useRef(null);
+            const selectedScenarioRef = useRef(null);
 
             const scrollToBottom = () => {
                 messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -878,6 +879,11 @@ Start somewhat interested but not urgent.`,
             useEffect(() => {
                 scrollToBottom();
             }, [messages]);
+
+            // Keep selectedScenarioRef in sync with selectedScenario state
+            useEffect(() => {
+                selectedScenarioRef.current = selectedScenario;
+            }, [selectedScenario]);
 
             // Initialize Vapi SDK
             useEffect(() => {
@@ -919,11 +925,23 @@ Start somewhat interested but not urgent.`,
                         // Handle transcript messages
                         if (message.type === 'transcript' && message.transcript) {
                             const isUser = message.role === 'user';
-                            setMessages(prev => [...prev, {
-                                speaker: isUser ? `You (${selectedScenario.company} AE)` : `${selectedScenario.targetAccount} Team`,
-                                content: message.transcript,
-                                isUser: isUser
-                            }]);
+                            const scenario = selectedScenarioRef.current;
+
+                            // Add null check to prevent errors if scenario becomes null
+                            if (scenario) {
+                                setMessages(prev => [...prev, {
+                                    speaker: isUser ? `You (${scenario.company} AE)` : `${scenario.targetAccount} Team`,
+                                    content: message.transcript,
+                                    isUser: isUser
+                                }]);
+                            } else {
+                                // Fallback if scenario is null
+                                setMessages(prev => [...prev, {
+                                    speaker: isUser ? 'You' : 'AI',
+                                    content: message.transcript,
+                                    isUser: isUser
+                                }]);
+                            }
                         }
                     });
 
