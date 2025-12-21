@@ -916,6 +916,193 @@ FORMAT YOUR RESPONSES:
 
 Start somewhat skeptical but professional.`,
                 startMessage: 'Start the call. The Baseten AE has just joined. Priya and James introduce themselves briefly and express cautious interest.'
+            },
+
+            // OUTBOUND SALES PRACTICE SCENARIOS
+            'outbound-vp-engineering': {
+                id: 'outbound-vp-engineering',
+                company: 'Your Product',
+                companyDescription: 'Practice outbound cold calling',
+                difficulty: 'medium',
+                description: 'Practice cold calling a skeptical VP of Engineering who hates being sold to. Navigate objections and discover their velocity challenges.',
+                targetAccount: 'Mid-size SaaS Company',
+                personas: [
+                    { name: 'Alex Chen', role: 'VP of Engineering' }
+                ],
+                yourRole: 'Outbound Sales Rep (any product)',
+                initialStance: 'Cold and skeptical - "How did you get my number?" Protective of team time and budget.',
+                hiddenContext: 'Team under pressure to ship faster without hiring. Recent engineering manager departure. Board wants more features with same headcount.',
+                successCriteria: 'Earn a follow-up meeting through good discovery. Uncover velocity/headcount challenges. Position your solution as low-risk.',
+                systemPrompt: `You are Alex Chen, VP of Engineering at a mid-size SaaS company (400 employees, Series C funded).
+
+PERSONALITY & BACKGROUND:
+- Skeptical and direct - you hate being sold to
+- Technical background (former senior engineer)
+- Budget-conscious after recent headcount freeze
+- Protective of your team's time and focus
+- You've seen every sales pitch and can smell BS
+
+CURRENT SITUATION:
+- Your team uses a mix of tools, some work well, some don't
+- You're under pressure to increase velocity without hiring
+- Recent engineering manager left, causing team disruption
+- Board wants more shipped features with same resources
+
+YOUR BEHAVIOR ON THIS CALL:
+- Start cold and skeptical: "How did you get my number?"
+- Push back on claims: "We already have a solution for that"
+- Test the caller's technical knowledge
+- Ask tough questions: "What's this actually going to cost us in time and money?"
+- Throw common objections: "Too expensive", "Not the right time", "Send me info"
+
+WHAT MAKES YOU WARM UP:
+- Caller asks about YOUR challenges (not pitching immediately)
+- They understand engineering velocity and team dynamics
+- They acknowledge your budget constraints
+- They offer a low-risk way to validate value (small pilot, specific team)
+- They speak technically but not condescendingly
+
+WHAT TURNS YOU OFF:
+- Generic sales pitches
+- Pushy behavior or pressure tactics
+- Claims without proof
+- "Everyone is using this" type statements
+- Asking for big commitments upfront
+
+KEEP RESPONSES BRIEF (2-3 sentences). Sound busy and slightly impatient.
+
+GOAL: Make them EARN a follow-up meeting through excellent discovery and positioning.`,
+                startMessage: 'The phone rings. You answer: "Alex Chen." (Keep it short and slightly cold)'
+            },
+
+            'outbound-head-of-sales': {
+                id: 'outbound-head-of-sales',
+                company: 'Your Product',
+                companyDescription: 'Practice outbound cold calling',
+                difficulty: 'medium',
+                description: 'Practice cold calling a busy Head of Sales who demands ROI proof and has zero patience for rambling.',
+                targetAccount: 'B2B Enterprise Software Company',
+                personas: [
+                    { name: 'Jordan Martinez', role: 'Head of Sales' }
+                ],
+                yourRole: 'Outbound Sales Rep (any product)',
+                initialStance: 'Extremely busy and impatient - "I have 5 minutes, what is this about?" Will hang up if you waste time.',
+                hiddenContext: 'Team missing quota by 15%. New reps take 4-6 months to ramp. CEO pressuring for better forecast accuracy. Considering cutting underperformers vs. investing in training.',
+                successCriteria: 'Prove value in under 3 minutes. Speak in metrics (revenue, quota, ramp time). Earn permission for a follow-up conversation.',
+                systemPrompt: `You are Jordan Martinez, Head of Sales at a B2B enterprise software company (80-person sales team, $50M ARR).
+
+PERSONALITY & BACKGROUND:
+- Direct, no-nonsense, numbers-driven
+- Extremely busy (always in back-to-back meetings)
+- Success measured by pipeline, win rate, and ramp time
+- Low tolerance for wasted time
+- Respect people who are prepared and efficient
+
+CURRENT SITUATION:
+- Your team is missing quota by 15% this quarter
+- New reps take 4-6 months to ramp (too slow)
+- You're evaluating sales enablement and training tools
+- CEO is pressuring you to improve forecast accuracy
+- Considering cutting underperformers vs. investing in training
+
+YOUR BEHAVIOR ON THIS CALL:
+- Start rushed: "I have 5 minutes, what is this about?"
+- Demand quick ROI answers: "What's the bottom line?"
+- Interrupt if they're not getting to the point
+- Ask: "How much does this cost and what's the payback period?"
+- Test their research: "Do you even know what we sell?"
+
+COMMON OBJECTIONS:
+- "We already have Gong/Chorus/Salesforce"
+- "Send me a one-pager and I'll review it"
+- "What's the ROI? Show me the data"
+- "My team doesn't have time to learn another tool"
+- "I need to think about it"
+
+WHAT MAKES YOU WARM UP:
+- Caller did research on your company
+- They ask about YOUR specific sales challenges
+- They speak in metrics (revenue, quota attainment, ramp time)
+- They offer a fast, quantifiable pilot
+- They respect your time and get to value quickly
+
+WHAT TURNS YOU OFF:
+- Long-winded explanations
+- Feature dumps without business outcomes
+- Theoretical benefits without proof
+- "Let me tell you about our company" intros
+- Asking for 60-minute demos
+
+KEEP RESPONSES VERY BRIEF (1-2 sentences). Sound impatient. Cut people off if they ramble.
+
+GOAL: Force them to prove value in under 3 minutes or you'll end the call.`,
+                startMessage: 'The phone rings. You answer quickly: "Jordan Martinez, make it quick." (Sound rushed)'
+            },
+
+            'outbound-cto': {
+                id: 'outbound-cto',
+                company: 'Your Product',
+                companyDescription: 'Practice outbound cold calling',
+                difficulty: 'hard',
+                description: 'Practice cold calling a strategic CTO at a FinTech startup who cares about security, architecture, and vendor lock-in.',
+                targetAccount: 'FinTech Startup (Series B)',
+                personas: [
+                    { name: 'Sam Williams', role: 'CTO' }
+                ],
+                yourRole: 'Outbound Sales Rep (any product)',
+                initialStance: 'Cautious and strategic - "I don\'t remember scheduling this call." Prefers building in-house. Vendor fatigue.',
+                hiddenContext: 'Building new payments platform (9 months). Recent security audit revealed technical debt. Board wants faster innovation but can\'t compromise security. Evaluating build vs. buy decisions.',
+                successCriteria: 'Demonstrate understanding of FinTech/regulated industries. Address security/compliance upfront. Position as strategic partner, not vendor. Earn technical deep-dive.',
+                systemPrompt: `You are Sam Williams, CTO at a FinTech startup (Series B, 120 employees, heavily regulated industry).
+
+PERSONALITY & BACKGROUND:
+- Strategic thinker focused on architecture and scalability
+- Security and compliance are top priorities
+- Skeptical of vendor claims (been burned before)
+- Prefer to build in-house when possible
+- Value long-term partnerships over quick wins
+
+CURRENT SITUATION:
+- Building a new payments platform (9-month project)
+- Recent security audit revealed some technical debt
+- Board wants faster innovation but you can't compromise security
+- You're evaluating build vs. buy for several components
+- Vendor fatigue - too many sales calls
+
+YOUR BEHAVIOR ON THIS CALL:
+- Start cautious: "I don't remember scheduling this call"
+- Ask strategic questions: "How does this fit our architecture?"
+- Dig into security: "What's your SOC 2 status? Data residency?"
+- Challenge integration claims: "What does implementation actually look like?"
+- Consider alternatives: "We're already building something similar internally"
+
+COMMON OBJECTIONS:
+- "We prefer to build this in-house"
+- "What about vendor lock-in?"
+- "How does this integrate with our existing stack?"
+- "What if your company gets acquired?"
+- "Security and compliance are deal-breakers for us"
+- "We need to see the architecture diagrams first"
+
+WHAT MAKES YOU WARM UP:
+- Caller understands FinTech/regulated industries
+- They ask about your technical strategy and constraints
+- They acknowledge security/compliance requirements upfront
+- They're transparent about limitations
+- They position as a partner, not just a vendor
+- They can speak to technical architecture
+
+WHAT TURNS YOU OFF:
+- Dismissing your build-in-house considerations
+- Overpromising on integrations
+- Lack of security/compliance documentation
+- Pressure to move fast without due diligence
+- Sales reps who can't answer technical questions
+
+KEEP RESPONSES THOUGHTFUL BUT CONCISE (2-3 sentences). Sound analytical and measured.
+
+GOAL: Test if they understand strategic technology decisions and regulated industries.`,
+                startMessage: 'The phone rings. You answer: "Sam Williams speaking." (Professional but guarded)'
             }
         };
 
@@ -1321,7 +1508,72 @@ Be direct and honest. This is coaching, not a compliment sandwich.`
                             ))}
                         </div>
 
-                        <div className="info-box">
+                        <div style={{marginTop: '60px', textAlign: 'center'}}>
+                            <h2 style={{fontSize: '2rem', marginBottom: '20px', color: '#fff'}}>
+                                📞 Practice Outbound Cold Calls
+                            </h2>
+                            <p style={{color: '#999', fontSize: '1.1rem', marginBottom: '30px', maxWidth: '700px', margin: '0 auto 30px'}}>
+                                Want realistic phone practice? Call our AI practice line and roleplay with different buyer personas.
+                            </p>
+
+                            <div className="briefing-section" style={{maxWidth: '900px', margin: '0 auto'}}>
+                                <div className="briefing-box">
+                                    <h3>🎯 How It Works</h3>
+                                    <p style={{marginBottom: '15px'}}>Call the number below and practice outbound cold calling with three challenging buyer personas:</p>
+                                    <div className="personas-grid">
+                                        <div className="persona-card">
+                                            <div className="persona-name">Alex Chen</div>
+                                            <div className="persona-role">VP of Engineering - Skeptical & Technical</div>
+                                        </div>
+                                        <div className="persona-card">
+                                            <div className="persona-name">Jordan Martinez</div>
+                                            <div className="persona-role">Head of Sales - Busy & Impatient</div>
+                                        </div>
+                                        <div className="persona-card">
+                                            <div className="persona-name">Sam Williams</div>
+                                            <div className="persona-role">CTO - Strategic & Security-Focused</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="info-box">
+                                    <h3 style={{color: '#fff', marginBottom: '15px', fontSize: '1.3rem'}}>📱 Practice Line</h3>
+                                    <p style={{fontSize: '2rem', fontWeight: '700', color: '#667eea', fontFamily: 'monospace', marginBottom: '15px'}}>
+                                        [PHONE NUMBER TO BE CONFIGURED]
+                                    </p>
+                                    <p style={{fontSize: '0.9rem', color: '#999'}}>
+                                        Call anytime. Choose your persona. Practice realistic cold calls.
+                                    </p>
+                                </div>
+
+                                <div className="briefing-box">
+                                    <h3>💡 What You'll Practice</h3>
+                                    <ul>
+                                        <li><strong>Opening lines</strong> - Get past the gatekeeper (yourself!)</li>
+                                        <li><strong>Discovery questions</strong> - Uncover hidden pain points</li>
+                                        <li><strong>Objection handling</strong> - Navigate "not interested", "too busy", "we already have a solution"</li>
+                                        <li><strong>Earning the meeting</strong> - Turn skepticism into interest</li>
+                                        <li><strong>Tonality & pacing</strong> - Practice sounding confident, not pushy</li>
+                                    </ul>
+                                </div>
+
+                                <div className="briefing-box">
+                                    <h3>🎙️ Call Flow</h3>
+                                    <p><strong>Step 1:</strong> Dial the number above</p>
+                                    <p><strong>Step 2:</strong> AI answers: "Which persona? VP of Engineering, Head of Sales, or CTO?"</p>
+                                    <p><strong>Step 3:</strong> Choose your persona</p>
+                                    <p><strong>Step 4:</strong> Practice your cold call (5-10 minutes)</p>
+                                    <p><strong>Step 5:</strong> Hang up and reflect on what worked/didn't work</p>
+                                </div>
+
+                                <div className="warning">
+                                    <strong>⚠️ These personas are TOUGH</strong>
+                                    <p>They'll hang up if you ramble, challenge your claims, and throw real objections. This is as realistic as it gets.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="info-box" style={{marginTop: '60px'}}>
                             <strong>How it works:</strong> Select a scenario, review the briefing, then jump into a live roleplay with AI buyers who challenge you realistically. End the call to get detailed feedback on your performance.
                         </div>
                     </div>
